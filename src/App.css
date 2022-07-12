@@ -33,3 +33,24 @@ a{
     height: 5vh;
     overflow: hidden;
 }
+
+.input{
+    margin: auto;
+    width: 90%;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+.searchContentBox{
+    display: flex;
+    flex-wrap: wrap;
+    gap: 50px 10px;
+    border: 3px solid black;
+    /* background-color: lightcoral; */
+    min-height: 100px;
+    border-radius: 10px;
+    margin: auto;
+    justify-content: center;
+    width: 90%;
+    box-shadow: rgba(14, 30, 37, 0.12) 0px 2px 4px 0px, rgba(14, 30, 37, 0.32) 0px 2px 16px 0px;
+}

@@ -9,7 +9,7 @@ type PostProp = {
     url:string,
     tags:string[],
     author:string,
-    date:any 
+    date:string 
 }
 
 
