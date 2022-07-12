@@ -1,29 +1,36 @@
-import { useEffect } from 'react'
-import Box from '@mui/material/Box';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useEffect } from "react";
+import Box from "@mui/material/Box";
+import { useLocation, useNavigate } from "react-router-dom";
+import Button from "@mui/material/Button";
 
+export const Json = () => {
+  const location = useLocation();
+  const navigate = useNavigate();
+  const state = location.state as object;
 
+  const redirectToHome = () => {
+    navigate("/");
+  };
 
-
-export const Json=()=> {
-
-    const location = useLocation();
-    const navigate = useNavigate();
-    const state = location.state as object;
-
-    useEffect(()=>{
-        if(!state){
-            navigate("/");
-        }
-    })
+  useEffect(() => {
+    if (!state) {
+      navigate("/");
+    }
+  });
 
   return (
     <Box>
-        <pre>
-        {JSON.stringify(state,null,2)}
-        </pre>
+      <Box style={{ display: "flex", justifyContent: "center" }}>
+        <Button
+          variant="outlined"
+          onClick={() => {
+            redirectToHome();
+          }}
+        >
+          Home
+        </Button>
+      </Box>
+      <pre>{JSON.stringify(state, null, 2)}</pre>
     </Box>
-  )
-}
-
-
+  );
+};

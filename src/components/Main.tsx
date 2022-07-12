@@ -1,72 +1,77 @@
-import { useEffect,useState,useRef } from "react";
+import { useEffect, useState, useRef } from "react";
 import { Post } from "./Card";
 import InfiniteScroll from "react-infinite-scroll-component";
-import TextField from '@mui/material/TextField';
-import Box from '@mui/material/Box';
-import LinearProgress from '@mui/material/LinearProgress';
+import TextField from "@mui/material/TextField";
+import Box from "@mui/material/Box";
+import LinearProgress from "@mui/material/LinearProgress";
 import { Typography } from "@mui/material";
-import Button from '@mui/material/Button';
-import {  useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import Button from "@mui/material/Button";
+
+type PostProp = {
+  title: string;
+  url: string;
+  _tags: string[];
+  author: string;
+  created_at: string;
+};
 
 export const Main = () => {
   const navigate = useNavigate();
   const [data, setData] = useState<Object[]>([]);
-  let [page, setPage] = useState(40);
+  let [page, setPage] = useState(0);
   const [isError, SetisError] = useState(true);
-  const [searchedData,setSearchData] = useState<Object[]>([]);
-  let searchTimeoutref = useRef<any>();
-  const [isLoading,setIsLoading] = useState(false);
+  const [searchedData, setSearchData] = useState<Object[]>([]);
+  let searchTimeoutref = useRef<NodeJS.Timeout>();
+  const [isLoading, setIsLoading] = useState(false);
 
-  
-  const redirectToJson = (json:object)=>{
-    navigate("/json",{state:json});
-  }
+  const redirectToJson = (json: object) => {
+    navigate("/json", { state: json });
+  };
 
   useEffect(() => {
-    if(isError){
+    if (isError) {
       getData();
       const interval = setInterval(() => {
-         setPage((page) => page + 1);
-       }, 10000);
-   
-     
-       return () => {
-         clearInterval(interval);
-       };
-      }
+        setPage((page) => page + 1);
+      }, 10000);
+
+      return () => {
+        clearInterval(interval);
+      };
+    }
   }, [page]);
 
+  const getSearchData = (e: React.ChangeEvent<HTMLInputElement>) => {
+    let searchValue = e.target.value;
 
-  const getSearchData =(e:any)=>{
-     let searchValue = e.target.value; 
+    if (searchValue.trim().length !== 0) {
+      setIsLoading(true);
+      if (searchTimeoutref.current) {
+        clearTimeout(searchTimeoutref.current);
+      }
 
-     if(searchValue.trim().length !== 0){
-       setIsLoading(true);
-     if(searchTimeoutref.current){
-       clearTimeout(searchTimeoutref.current);
-     } 
- 
-     searchTimeoutref.current = setTimeout(()=>{
-       
-       if(searchValue.trim().length !== 0){
-             let arr = data.filter((el:any)=> el.author.toLocaleLowerCase().includes(searchValue.toLocaleLowerCase()) || el.title.toLocaleLowerCase().includes(searchValue.toLocaleLowerCase()) );
-             setSearchData(arr);
-             setIsLoading(false);
-           }
-        
-     },1000)
-    
-    }else if(searchValue.trim().length == 0){
-           setSearchData([]);
-           setIsLoading(false);
-           clearTimeout(searchTimeoutref.current)
+      searchTimeoutref.current = setTimeout(() => {
+        if (searchValue.trim().length !== 0) {
+          let arr = data.filter(
+            (el: any) =>
+              el.author
+                .toLocaleLowerCase()
+                .includes(searchValue.toLocaleLowerCase()) ||
+              el.title
+                .toLocaleLowerCase()
+                .includes(searchValue.toLocaleLowerCase())
+          );
+          setSearchData(arr);
+          setIsLoading(false);
+        }
+      }, 1000);
+    } else if (searchValue.trim().length == 0) {
+      setSearchData([]);
+      setIsLoading(false);
+      clearTimeout(searchTimeoutref.current);
     }
-  }  
-
-
-
-  
-
+  };
 
   const getData = () => {
     console.log();
@@ -88,26 +93,52 @@ export const Main = () => {
       });
   };
 
-
-
   return (
     <>
       <h1 className="headd">News-Stand </h1>
 
-        {data.length !== 0 &&  <Box className="input">
-        <TextField autoComplete="off" fullWidth label="Search by Author and Title" id="fullWidth" onChange={getSearchData} />
-        </Box>}
-       
+      {data.length !== 0 && (
+        <Box className="input">
+          <TextField
+            autoComplete="off"
+            fullWidth
+            label="Search by Author and Title"
+            id="fullWidth"
+            onChange={getSearchData}
+          />
+        </Box>
+      )}
 
-          {isLoading && <Box style= {{width:"90%",margin:"auto",marginTop:"5vh",marginBottom:"5vh"}}><LinearProgress/></Box>}
-          
+      {isLoading && (
+        <Box
+          style={{
+            width: "90%",
+            margin: "auto",
+            marginTop: "5vh",
+            marginBottom: "5vh",
+          }}
+        >
+          <LinearProgress />
+        </Box>
+      )}
 
-        {searchedData.length > 0 && !isLoading  && <Box className="searchContentBox1" >
-          <Typography style={{textAlign:"center"}}>Results</Typography>
+      {searchedData.length > 0 && !isLoading && (
+        <Box className="searchContentBox1">
+          <Typography style={{ textAlign: "center", fontSize: "5vh" }}>
+            Results
+          </Typography>
           <Box className="searchContentBox2">
-          { searchedData.map((el: any, i) => {
+            {searchedData.map((el: PostProp | any, i) => {
               return (
                 <div>
+                  <Button
+                    variant="outlined"
+                    onClick={() => {
+                      redirectToJson(el);
+                    }}
+                  >
+                    See Raw JSON
+                  </Button>
                   <Post
                     key={i}
                     title={el?.title}
@@ -119,8 +150,9 @@ export const Main = () => {
                 </div>
               );
             })}
-            </Box>
-        </Box>}
+          </Box>
+        </Box>
+      )}
 
       <InfiniteScroll
         dataLength={data.length}
@@ -130,14 +162,19 @@ export const Main = () => {
         hasMore={isError}
         loader={<h2 style={{ textAlign: "center" }}>Loading...</h2>}
       >
-
-        
-
         <div className="main">
           {data &&
-            data.map((el: any, i) => {
+            data.map((el: PostProp | any, i) => {
               return (
-                <div onClick={()=>{redirectToJson(el)}}>
+                <div>
+                  <Button
+                    variant="outlined"
+                    onClick={() => {
+                      redirectToJson(el);
+                    }}
+                  >
+                    See Raw JSON
+                  </Button>
                   <Post
                     key={i}
                     title={el?.title}
