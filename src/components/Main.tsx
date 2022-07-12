@@ -5,8 +5,11 @@ import TextField from '@mui/material/TextField';
 import Box from '@mui/material/Box';
 import LinearProgress from '@mui/material/LinearProgress';
 import { Typography } from "@mui/material";
+import Button from '@mui/material/Button';
+import {  useNavigate } from "react-router-dom";
 
 export const Main = () => {
+  const navigate = useNavigate();
   const [data, setData] = useState<Object[]>([]);
   let [page, setPage] = useState(40);
   const [isError, SetisError] = useState(true);
@@ -15,6 +18,9 @@ export const Main = () => {
   const [isLoading,setIsLoading] = useState(false);
 
   
+  const redirectToJson = (json:object)=>{
+    navigate("/json",{state:json});
+  }
 
   useEffect(() => {
     if(isError){
@@ -43,7 +49,6 @@ export const Main = () => {
      searchTimeoutref.current = setTimeout(()=>{
        
        if(searchValue.trim().length !== 0){
-             console.log(2);
              let arr = data.filter((el:any)=> el.author.toLocaleLowerCase().includes(searchValue.toLocaleLowerCase()) || el.title.toLocaleLowerCase().includes(searchValue.toLocaleLowerCase()) );
              setSearchData(arr);
              setIsLoading(false);
@@ -52,7 +57,6 @@ export const Main = () => {
      },1000)
     
     }else if(searchValue.trim().length == 0){
-           console.log(1) 
            setSearchData([]);
            setIsLoading(false);
            clearTimeout(searchTimeoutref.current)
@@ -133,7 +137,7 @@ export const Main = () => {
           {data &&
             data.map((el: any, i) => {
               return (
-                <div>
+                <div onClick={()=>{redirectToJson(el)}}>
                   <Post
                     key={i}
                     title={el?.title}

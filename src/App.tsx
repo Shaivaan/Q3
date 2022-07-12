@@ -1,12 +1,10 @@
-import React from 'react';
 import './App.css';
-import { Post } from './components/Card';
-import { Main } from './components/Main';
+import { Routers } from './Routers/Routers';
 
 function App() {
   return (
     <div>
-    <Main/>
+    <Routers />
      </div>
   );
 }

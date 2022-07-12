@@ -4,6 +4,7 @@ import CardContent from '@mui/material/CardContent';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 
+
 type PostProp = {
     title:string,
     url:string,
@@ -12,9 +13,7 @@ type PostProp = {
     date:string 
 }
 
-
    
-
 export const  Post=({title,url,tags,author,date}:PostProp)=> {
   return (
     <>
