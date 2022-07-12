@@ -3,18 +3,34 @@ import { Post } from "./Card";
 import InfiniteScroll from "react-infinite-scroll-component";
 import TextField from '@mui/material/TextField';
 import Box from '@mui/material/Box';
-import Typography from '@mui/material/Typography';
 import LinearProgress from '@mui/material/LinearProgress';
+import { Typography } from "@mui/material";
 
 export const Main = () => {
   const [data, setData] = useState<Object[]>([]);
-  let [page, setPage] = useState(46);
+  let [page, setPage] = useState(40);
   const [isError, SetisError] = useState(true);
   const [searchedData,setSearchData] = useState<Object[]>([]);
   let searchTimeoutref = useRef<any>();
   const [isLoading,setIsLoading] = useState(false);
 
   
+
+  useEffect(() => {
+    if(isError){
+      getData();
+      const interval = setInterval(() => {
+         setPage((page) => page + 1);
+       }, 10000);
+   
+     
+       return () => {
+         clearInterval(interval);
+       };
+      }
+  }, [page]);
+
+
   const getSearchData =(e:any)=>{
      let searchValue = e.target.value; 
 
@@ -25,43 +41,27 @@ export const Main = () => {
      } 
  
      searchTimeoutref.current = setTimeout(()=>{
+       
+       if(searchValue.trim().length !== 0){
+             console.log(2);
+             let arr = data.filter((el:any)=> el.author.toLocaleLowerCase().includes(searchValue.toLocaleLowerCase()) || el.title.toLocaleLowerCase().includes(searchValue.toLocaleLowerCase()) );
+             setSearchData(arr);
+             setIsLoading(false);
+           }
         
-         if(searchValue.length !== 0){
-           let arr = data.filter((el:any)=> el.author.toLocaleLowerCase().includes(searchValue.toLocaleLowerCase()) || el.title.toLocaleLowerCase().includes(searchValue.toLocaleLowerCase()) );
- 
-           setSearchData(arr);
-           setIsLoading(false);
-         }else if(searchValue.trim().length == 0){ 
+     },1000)
+    
+    }else if(searchValue.trim().length == 0){
+           console.log(1) 
            setSearchData([]);
            setIsLoading(false);
-         }
-         
-     },1000)
-     }
+           clearTimeout(searchTimeoutref.current)
+    }
   }  
 
 
-// useEffect(()=>{
-//   getData();
-// },[])
 
-
-
-  useEffect(() => {
-
-      
-    if(isError){
-      const interval = setInterval(() => {
-         setPage((page) => page + 1);
-         getData();
-       }, 3000);
-   
-     
-       return () => {
-         clearInterval(interval);
-       };
-      }
-  }, [page]);
+  
 
 
   const getData = () => {
@@ -90,23 +90,17 @@ export const Main = () => {
     <>
       <h1 className="headd">News-Stand </h1>
 
-      <InfiniteScroll
-        dataLength={data.length}
-        next={() => {
-          setPage(page + 1);
-          getData();
-        }}
-        hasMore={isError}
-        loader={<h2 style={{ textAlign: "center" }}>Loading...</h2>}
-      >
-        <Box className="input">
-        <TextField fullWidth label="Search by Author and Title" id="fullWidth" onChange={getSearchData} />
-        </Box>
+        {data.length !== 0 &&  <Box className="input">
+        <TextField autoComplete="off" fullWidth label="Search by Author and Title" id="fullWidth" onChange={getSearchData} />
+        </Box>}
+       
 
-          {isLoading && <Box style= {{width:"90%",margin:"auto",marginTop:""}}><LinearProgress /></Box>}
+          {isLoading && <Box style= {{width:"90%",margin:"auto",marginTop:"5vh",marginBottom:"5vh"}}><LinearProgress/></Box>}
           
 
-        {searchedData.length > 0  && <Box className="searchContentBox">
+        {searchedData.length > 0 && !isLoading  && <Box className="searchContentBox1" >
+          <Typography style={{textAlign:"center"}}>Results</Typography>
+          <Box className="searchContentBox2">
           { searchedData.map((el: any, i) => {
               return (
                 <div>
@@ -121,7 +115,18 @@ export const Main = () => {
                 </div>
               );
             })}
+            </Box>
         </Box>}
+
+      <InfiniteScroll
+        dataLength={data.length}
+        next={() => {
+          setPage(page + 1);
+        }}
+        hasMore={isError}
+        loader={<h2 style={{ textAlign: "center" }}>Loading...</h2>}
+      >
+
         
 
         <div className="main">

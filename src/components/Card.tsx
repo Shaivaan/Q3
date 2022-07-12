@@ -29,7 +29,7 @@ export const  Post=({title,url,tags,author,date}:PostProp)=> {
 
             <div className='bord'>
         <Typography variant="h6" component="div">
-          {author}
+          {author || "Unknown"}
         </Typography>
         </div>
 
