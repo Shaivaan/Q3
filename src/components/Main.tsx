@@ -21,6 +21,7 @@ export const Main = () => {
   const [data, setData] = useState<Object[]>([]);
   let [page, setPage] = useState(0);
   const [isError, SetisError] = useState(true);
+  const [counter, setCounter] = useState(false);
   const [searchedData, setSearchData] = useState<Object[]>([]);
   let searchTimeoutref = useRef<NodeJS.Timeout>();
   const [isLoading, setIsLoading] = useState(false);
@@ -40,6 +41,7 @@ export const Main = () => {
         clearInterval(interval);
       };
     }
+    setCounter(false)
   }, [page]);
 
   const getSearchData = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -160,7 +162,7 @@ export const Main = () => {
           setPage(page + 1);
         }}
         hasMore={isError}
-        loader={<h2 data-testid= "loader" style={{ textAlign: "center" }}>Loading...</h2>}
+        loader={<h4 style={{ textAlign: "center" }}>Loading...</h4>}
       >
         <div className="main">
           {data &&
