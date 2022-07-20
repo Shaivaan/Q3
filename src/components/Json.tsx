@@ -8,6 +8,7 @@ export const Json = () => {
   const navigate = useNavigate();
   const state = location.state as object;
 
+
   const redirectToHome = () => {
     navigate("/");
   };
@@ -20,7 +21,7 @@ export const Json = () => {
 
   return (
     <Box>
-      <Box style={{ display: "flex", justifyContent: "center" }}>
+      <Box style={{ display: "flex", justifyContent: "center" }} >
         <Button
           variant="outlined"
           onClick={() => {
@@ -30,7 +31,7 @@ export const Json = () => {
           Home
         </Button>
       </Box>
-      <pre>{JSON.stringify(state, null, 2)}</pre>
+      <pre data-testid = "pre">{JSON.stringify(state, null, 2)}</pre>
     </Box>
   );
 };

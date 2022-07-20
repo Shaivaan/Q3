@@ -123,11 +123,11 @@ export const Main = () => {
       )}
 
       {searchedData.length > 0 && !isLoading && (
-        <Box className="searchContentBox1">
+        <Box className="searchContentBox1" >
           <Typography style={{ textAlign: "center", fontSize: "5vh" }}>
             Results
           </Typography>
-          <Box className="searchContentBox2">
+          <Box className="searchContentBox2" data-testid="custom-element" >
             {searchedData.map((el: PostProp | any, i) => {
               return (
                 <div>
@@ -160,7 +160,7 @@ export const Main = () => {
           setPage(page + 1);
         }}
         hasMore={isError}
-        loader={<h2 style={{ textAlign: "center" }}>Loading...</h2>}
+        loader={<h2 data-testid= "loader" style={{ textAlign: "center" }}>Loading...</h2>}
       >
         <div className="main">
           {data &&
