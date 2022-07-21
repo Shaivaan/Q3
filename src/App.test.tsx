@@ -1,10 +1,12 @@
 import { act, fireEvent, render, screen, waitFor } from '@testing-library/react';
-import { Card } from '@mui/material';
+import { Post } from './components/Card';
 
 import { Main } from './components/Main';
-import { BrowserRouter, Router } from 'react-router-dom';
+import { BrowserRouter, Router, MemoryRouter } from 'react-router-dom';
 import { createMemoryHistory } from 'history';
 import { Json } from './components/Json';
+import { Routers } from './Routers/Routers';
+import App from './App';
 jest.setTimeout(10000)
 
 const MockMain = () => {
@@ -22,21 +24,68 @@ it('New stand test exist', () => {
 });
 
 
-it('should render Loading... in initial', () => {
+it('should render Loading screen and data', async () => {
   render(<MockMain />)
   expect(screen.getByText("Loading...")).toBeInTheDocument();
+
+  await waitFor(() => {
+    const searchBox = screen.getByLabelText(/Search by Author and Title/i);
+    expect(searchBox).toBeInTheDocument();
+  }, { timeout: 5000 });
+
+});
+
+it("should navigate to Json page", async () => {
+  render(<MockMain />);
+
+  await waitFor(() => {
+    const jsonButton = screen.getAllByRole("button", { name: /See Raw JSON/i });
+    fireEvent.click(jsonButton[0]);
+  }, { timeout: 5000 });
+})
+
+it("should search for post", async () => {
+  render(<MockMain />);
+
+  await waitFor(() => {
+    const searchBox = screen.getByLabelText(/Search by Author and Title/i);
+    fireEvent.change(searchBox, { target: { value: "a" } });
+  }, { timeout: 5000 });
+})
+
+it("should render the routers component", () => {
+  render(<BrowserRouter> <Routers /> </BrowserRouter>);
+});
+
+it("should render the Post component", () => {
+  render(
+    <BrowserRouter>
+      <Post
+        title="Youtube"
+        url="https://meta.you.be"
+        date={new Date().toLocaleString()}
+        tags={["react", "youtube"]}
+      />
+    </BrowserRouter>
+  );
+});
+
+it("should render the app component", () => {
+  render(
+    <BrowserRouter>
+      <App />
+    </BrowserRouter>
+  );
 });
 
 
 
-
-
-it('should render input after loading...', async() => {
-  render(<MockMain/>)
-  await waitFor(()=>{
-    expect(screen.findByLabelText("Search by Author and Title")).toBeInTheDocument();
-    },{timeout:5000})  
-});
+// it('should render input after loading...', async () => {
+//   render(<MockMain />)
+//   await waitFor(() => {
+//     expect(screen.findByLabelText("Search by Author and Title")).toBeInTheDocument();
+//   }, { timeout: 5000 })
+// });
 
 // it('should render data after loading completion', async() => {
 //   render(<MockMain/>)
@@ -44,14 +93,14 @@ it('should render input after loading...', async() => {
 // });
 
 
-it('should render Loading... in initial', async() => {
-  render(<MockMain />)
-   await waitFor(()=>{
-    // expect(screen.getAllByRole("button")).toBeInstanceOf(Array);
-    expect(screen.getByText("News-Stand")).toBeInTheDocument();
-    })  
-});
-  
+// it('should render Loading... in initial', async () => {
+//   render(<MockMain />)
+//   await waitFor(() => {
+//     // expect(screen.getAllByRole("button")).toBeInstanceOf(Array);
+//     expect(screen.getByText("News-Stand")).toBeInTheDocument();
+//   })
+// });
+
 
 
 
@@ -98,8 +147,6 @@ const MockData = {
 }
 
 
-
-
 const MockJSON = () => {
   const history = createMemoryHistory();
   history.push("/json", { ...MockData });
@@ -110,13 +157,27 @@ const MockJSON = () => {
   );
 };
 
+// const mdata = null;
 
-it('Json components exist', () => {
+// const MockJSON2 = () => {
+//   const history = createMemoryHistory();
+//   history.push("/json", { ...mdata });
+//   return (
+//     <Router location={history.location} navigator={history}>
+//       <Json />
+//     </Router>
+//   );
+// };
+
+
+it('should render the JSON component & go back should work', () => {
   render(<MockJSON />)
-  expect(screen.getByRole("button")).toBeInTheDocument();
+
+  const goHomeBtn = screen.getByRole("button", { name: /Home/i });
+  expect(goHomeBtn).toBeInTheDocument();
+  fireEvent.click(goHomeBtn);
 });
 
-it('Json components exist', () => {
-  render(<MockJSON />)
-  expect(screen.getByTestId("pre")).toBeInTheDocument();
+it("should redirect to home page if no data is present", async () => {
+  render(<Json />, { wrapper: MemoryRouter });
 });

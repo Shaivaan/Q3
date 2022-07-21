@@ -15,9 +15,10 @@ export const Json = () => {
 
   useEffect(() => {
     if (!state) {
+      console.log("no data on state", state);
       navigate("/");
     }
-  });
+  }, []);
 
   return (
     <Box>

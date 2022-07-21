@@ -8,7 +8,7 @@ type PostProp = {
   title: string;
   url: string;
   tags: string[];
-  author: string;
+  author?: string;  // ? - optional parameter
   date: string;
 };
 
@@ -37,7 +37,7 @@ export const Post = ({ title, url, tags, author, date }: PostProp) => {
             {tags?.map((el, i) => {
               return (
                 <Typography key={i} sx={{ mb: 1.5 }} color="text.secondary">
-                  #{el}ㅤ
+                  #{el}
                 </Typography>
               );
             })}

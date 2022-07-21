@@ -76,7 +76,6 @@ export const Main = () => {
   };
 
   const getData = () => {
-    console.log();
     fetch(
       `https://hn.algolia.com/api/v1/search_by_date?tags=story&page=${page}`
     )
@@ -133,7 +132,7 @@ export const Main = () => {
           <Box className="searchContentBox2" >
             {searchedData.map((el: PostProp | any, i) => {
               return (
-                <div>
+                <div key={i}>
                   <Button
                     variant="outlined"
                     onClick={() => {
@@ -169,7 +168,7 @@ export const Main = () => {
           {data &&
             data.map((el: PostProp | any, i) => {
               return (
-                <div>
+                <div key={i}>
                   <Button
                     variant="outlined"
                     onClick={() => {
