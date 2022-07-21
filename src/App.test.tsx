@@ -1,4 +1,4 @@
-import { act, render, screen, waitFor } from '@testing-library/react';
+import { act, fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { Card } from '@mui/material';
 
 import { Main } from './components/Main';
@@ -18,35 +18,40 @@ const MockMain = () => {
 // Main
 it('New stand test exist', () => {
   render(<MockMain />)
-  const divElement = screen.getByText("News-Stand")
-  expect(divElement).toBeInTheDocument();
+  expect(screen.getByText("News-Stand")).toBeInTheDocument();
 });
 
 
-it('renderss without crashing', () => {
+it('should render Loading... in initial', () => {
   render(<MockMain />)
   expect(screen.getByText("Loading...")).toBeInTheDocument();
 });
 
 
-it('Loading text gone', () => {
 
-    render(<BrowserRouter><Main/></BrowserRouter>)
 
-  const loading = screen.getByText(/Loading.../i)
-  waitFor(()=>{
-        expect(loading).not.toBeInTheDocument();
-    })
+
+it('should render input after loading...', async() => {
+  render(<MockMain/>)
+  await waitFor(()=>{
+    expect(screen.findByLabelText("Search by Author and Title")).toBeInTheDocument();
+    },{timeout:5000})  
 });
 
+// it('should render data after loading completion', async() => {
+//   render(<MockMain/>)
+//       expect(await screen.findAllByRole("button")).toBeInstanceOf(Array);
+// });
 
 
-//   it('data fetched', async() => {
-//     render (<MockMain/>)
-//             const errorMsg = await screen.findByText("See Raw JSON");
-//             expect(errorMsg).not.toBeInTheDocument();
-
-//   });
+it('should render Loading... in initial', async() => {
+  render(<MockMain />)
+   await waitFor(()=>{
+    // expect(screen.getAllByRole("button")).toBeInstanceOf(Array);
+    expect(screen.getByText("News-Stand")).toBeInTheDocument();
+    })  
+});
+  
 
 
 

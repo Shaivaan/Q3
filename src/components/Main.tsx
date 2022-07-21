@@ -113,6 +113,7 @@ export const Main = () => {
 
       {isLoading && (
         <Box
+          data-testid = "loader"
           style={{
             width: "90%",
             margin: "auto",
@@ -129,7 +130,7 @@ export const Main = () => {
           <Typography style={{ textAlign: "center", fontSize: "5vh" }}>
             Results
           </Typography>
-          <Box className="searchContentBox2" data-testid="custom-element" >
+          <Box className="searchContentBox2" >
             {searchedData.map((el: PostProp | any, i) => {
               return (
                 <div>
@@ -164,7 +165,7 @@ export const Main = () => {
         hasMore={isError}
         loader={<h4 style={{ textAlign: "center" }}>Loading...</h4>}
       >
-        <div className="main">
+        <div className="main" data-testid="alldata">
           {data &&
             data.map((el: PostProp | any, i) => {
               return (
